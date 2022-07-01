@@ -11,6 +11,8 @@ import { User } from '../users/users.model';
 interface PostCreationAttrs {
   tittle: string;
   content: string;
+  userId: number;
+  image: string;
 }
 
 @Table({ tableName: 'posts', createdAt: false, updatedAt: false })

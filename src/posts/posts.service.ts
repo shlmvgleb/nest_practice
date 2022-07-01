@@ -5,18 +5,21 @@ import { CreatePostDTO } from "./dto/postDTO";
 import { Request } from "express";
 import { JwtService } from "@nestjs/jwt";
 import { User } from "../users/users.model";
+import { FilesService } from "../files/files.service";
 
 @Injectable()
 export class PostsService{
   constructor(@InjectModel(Post) private postRepository: typeof Post,
-              private jwtService: JwtService) {}
+              private jwtService: JwtService,
+              private fileService: FilesService) {}
 
-  async createPost(dto: CreatePostDTO, request: Request){
+  async createPost(dto: CreatePostDTO, request: Request, image: any){
     const auth = request.headers.authorization.split(' ');
     const token = auth[1];
     const user = this.jwtService.verify(token);
     dto.userId = user.id;
-    const post = await Post.create(dto)
+    const fileName = await this.fileService.createFile(image);
+    const post = await Post.create({...dto, image: fileName})
     return post;
   }
 
