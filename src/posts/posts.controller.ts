@@ -1,9 +1,10 @@
-import { Body, Controller, Get, Param, Post, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Req, UseGuards, UsePipes } from "@nestjs/common";
 import { PostsService } from "./posts.service";
 import { CreatePostDTO } from "./dto/postDTO";
 import { JwtAuthGuard } from "../auth/jwt.auth.guard";
 import { Request } from "express";
 import { BanGuard } from "../auth/ban.guard";
+import { ValidationPipe } from "../pipes/validation.pipe";
 
 
 @UseGuards(JwtAuthGuard, BanGuard)
@@ -11,6 +12,7 @@ import { BanGuard } from "../auth/ban.guard";
 export class PostsController {
   constructor(private postService: PostsService) {}
 
+  @UsePipes(ValidationPipe)
   @Post('/create')
   createPost(@Req() request: Request, @Body() postDto: CreatePostDTO) {
     return this.postService.createPost(postDto, request);

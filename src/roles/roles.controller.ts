@@ -1,8 +1,9 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, UseGuards, UsePipes } from "@nestjs/common";
 import {RolesService} from "./roles.service";
 import {CreateRoleDTO} from "./dto/roleDTO";
 import { Roles } from "../auth/roles-auth.decorator";
 import { RolesGuard } from "../auth/roles.guard";
+import { ValidationPipe } from "../pipes/validation.pipe";
 
 
 @Roles("ADMIN")
@@ -11,6 +12,7 @@ import { RolesGuard } from "../auth/roles.guard";
 export class RolesController {
   constructor(private roleService: RolesService) {}
 
+  @UsePipes(ValidationPipe)
   @Post()
   create(@Body() dto: CreateRoleDTO) {
     return this.roleService.createRole(dto);
